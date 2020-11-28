@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: {{ project_name }}_django_web
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/djangodb
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    container_name: {{ project_name }}_postgresql
+    image: postgres
+    environment:
+      - POSTGRES_DB=djangodb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
